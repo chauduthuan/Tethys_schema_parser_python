@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://tethys.sdsu.edu/schema/1.0" elementFormDefault="unqualified"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://tethys.sdsu.edu/schema/1.0">
+
+    <xs:element name="Ensemble">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Name" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Ensemble name (unique identifier).</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Unit" maxOccurs="unbounded" type="UnitGroup"/>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:key name="Verify">
+            <xs:selector xpath="Ensemble"/>
+            <xs:field xpath="Name"/>
+        </xs:key>
+    </xs:element>
+    <xs:complexType name="UnitGroup">
+        <xs:sequence>
+            <xs:element name="ID" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation>A unique unit number that identifies this instrument within the ensemble.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Project" type="xs:string" minOccurs="0"/>
+            <xs:choice>
+                <xs:element name="Site" type="xs:string" minOccurs="0"/>
+                <xs:element name="Cruise" type="xs:string" minOccurs="0"/>
+            </xs:choice>
+            <xs:element name="Deployment" type="xs:integer"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

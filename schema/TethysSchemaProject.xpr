@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="14.1">
+    <meta>
+        <filters directoryPatterns="" filePatterns="" positiveFilePatterns="" showHiddenFiles="false"/>
+        <options>
+            <serialized version="14.1" xml:space="preserve">
+                <map>
+                    <entry>
+                        <String>enable.project.master.files.support</String>
+                        <Boolean>true</Boolean>
+                    </entry>
+                    <entry>
+                        <String>validation.scenarios</String>
+                        <validationScenario-array/>
+                    </entry>
+                </map>
+            </serialized>
+        </options>
+    </meta>
+    <projectTree name="TethysSchemaProject.xpr">
+        <folder masterFiles="true" name="Master Files">
+            <file name="tethys.xsd"/>
+        </folder>
+        <file name="Calibrations.xsd"/>
+        <file name="CommonElements.xsd"/>
+        <file name="Deployment.xsd"/>
+        <file name="Detections.v1_2.xsd"/>
+        <file name="Ensemble.xsd"/>
+        <file name="Events.xsd"/>
+        <file name="itis.xsd"/>
+        <file name="Localization.xsd"/>
+        <file name="SpeciesAbbreviations.xsd"/>
+        <file name="tethys.xsd"/>
+        <file name="TransferFunction.xsd"/>
+    </projectTree>
+</project>

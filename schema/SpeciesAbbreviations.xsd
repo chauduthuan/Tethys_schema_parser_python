@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://tethys.sdsu.edu/schema/1.0"
+    xmlns="http://tethys.sdsu.edu/schema/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="unqualified">
+
+
+    <xs:element name="Abbreviations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Name">
+                    <xs:annotation>
+                        <xs:documentation>Name used to identify this set of abbreviations.</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:token">
+                            <xs:whiteSpace value="collapse"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="Map">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="1" minOccurs="1">
+                            <xs:element name="completename">
+                                <xs:annotation>
+                                    <xs:documentation>Scientific species name, must match a complete name in the ITIS (www.itis.gov) database.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:token">
+                                            <xs:attribute name="Group" type="xs:token">
+                                                <xs:annotation>
+                                                  <xs:documentation>Used to denote a possible subspecies. Example, a call of an unknown beaked whale may be assigned to Hyperoodontidae, but we indicate a suspected species or calltype via this attribute.</xs:documentation>
+                                                </xs:annotation>
+                                            </xs:attribute>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element minOccurs="0" name="tsn">
+                                <xs:annotation>
+                                    <xs:documentation>Taxonomic serial number in the ITIS (www.itis.gov) database.
+Need not be entered by hand.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:integer">
+                                            <xs:attribute name="group" type="xs:token">
+                                                <xs:annotation>
+                                                  <xs:documentation>Used to denote a possible subspecies. Example, a call of an unknown beaked whale may be assigned to Hyperoodontidae, but we indicate a suspected species or calltype via this attribute.</xs:documentation>
+                                                </xs:annotation>
+                                            </xs:attribute>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="coding" type="xs:token">
+                                <xs:annotation>
+                                    <xs:documentation>Abbreviation for species.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

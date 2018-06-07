@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Detections">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Version" type="xs:string"/>
+        <xs:element name="Site" type="xs:string"/>
+        <xs:element name="Project" type="xs:string"/>
+        <xs:element name="User_ID" type="xs:string"/>
+        <xs:element name="Deployment" type="xs:decimal"/>
+        <xs:element name="Detector" type="xs:string"/>
+        <xs:element name="Parameters" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:any minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Effort" type="Effort_TYPE"/>
+        <xs:element name="OnEffort" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Detection" minOccurs="0" maxOccurs="unbounded" type="Detection_TYPE"
+              />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="OffEffort" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Detection" minOccurs="0" maxOccurs="unbounded" type="Detection_TYPE"
+              />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="subtype_TYPE">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <!--   
+         <xs:complexType name=subtype_TYPE>  (something like this)
+	  <xs:restriction base="xs:string">
+	    <xs:enumeration value="Type A"/>
+            <xs:enumeration value="Type B"/>
+            <xs:enumeration value="&amp;gt;20kHz"/>
+            <xs:enumeration value="%lt;20kHz"/>
+            <xs:enumeration value="50kHz"/>
+            <xs:enumeration value="&amp;gt;10kHz"/>
+            <xs:enumeration value="%lt;10kHz"/>
+            <xs:enumeration value="Broadband"/>
+            <xs:enumeration value="Narrowband"/>
+            <xs:enumeration value="Low Frequency"/>
+            <xs:enumeration value="Small Boat"/>
+            <xs:enumeration value="Other"/>
+            <xs:enumeration value="LFA"/>
+            <xs:enumeration value="MFA"/>
+            <xs:enumeration value="Echosounder"/>
+	  </xs:restriction>
+         </xs:complexType>
+	  -->
+
+  <xs:complexType name="call_TYPE">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Subtype" type="subtype_TYPE"/>
+        <xs:attribute name="DSC" type="xs:double"/>
+        <xs:attribute name="min" type="xs:double"/>
+        <xs:attribute name="peak" type="xs:double"/>
+        <xs:attribute name="peak_1_low" type="xs:double"/>
+        <xs:attribute name="peak_2" type="xs:double"/>
+        <xs:attribute name="peak_3" type="xs:double"/>
+        <xs:attribute name="peak_4_high" type="xs:double"/>
+        <xs:attribute name="max" type="xs:double"/>
+        <xs:attribute name="dominant_sideband" type="xs:double"/>
+        <xs:attribute name="min_harmonic" type="xs:double"/>
+        <xs:attribute name="max_harmonic" type="xs:double"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- todo:  Add other known attributes and their parameters -->
+  <!--
+           <xs:restriction base="xs:string">
+	    <xs:enumeration value="20Hz"/>
+            <xs:enumeration value="40Hz Tone"/>
+            <xs:enumeration value="50Hz Pulse"/>
+            <xs:enumeration value="80Hz Pulse"/>
+            <xs:enumeration value="A"/>
+            <xs:enumeration value="Active Sonar"/>
+            <xs:enumeration value="Airplane"/>
+            <xs:enumeration value="B"/>
+            <xs:enumeration value="Bark"/>
+            <xs:enumeration value="Be1"/>
+            <xs:enumeration value="Be2"/>
+            <xs:enumeration value="Be3"/>
+            <xs:enumeration value="Be4"/>
+            <xs:enumeration value="Be5"/>
+            <xs:enumeration value="Be6"/>
+            <xs:enumeration value="Be7"/>
+            <xs:enumeration value="Boing"/>
+            <xs:enumeration value="Buzzes"/>
+            <xs:enumeration value="Call-Countercall"/>
+            <xs:enumeration value="Clicks"/>
+            <xs:enumeration value="Codas"/>
+            <xs:enumeration value="Communications"/>
+            <xs:enumeration value="Creaks"/>
+            <xs:enumeration value="D"/>
+            <xs:enumeration value="Downsweeps"/>
+            <xs:enumeration value="Explosion"/>
+            <xs:enumeration value="FM"/>
+            <xs:enumeration value="Feeding"/>
+            <xs:enumeration value="Higher Calls"/>
+            <xs:enumeration value="Knocking"/>
+            <xs:enumeration value="M1"/>
+            <xs:enumeration value="M3"/>
+            <xs:enumeration value="M4"/>
+            <xs:enumeration value="M5"/>
+            <xs:enumeration value="Motorboat"/>
+            <xs:enumeration value="Other"/>
+            <xs:enumeration value="Pulse Trains"/>
+            <xs:enumeration value="Ship"/>
+            <xs:enumeration value="Slow Clicks"/>
+            <xs:enumeration value="Social"/>
+            <xs:enumeration value="Song"/>
+            <xs:enumeration value="Squeals"/>
+            <xs:enumeration value="Star Wars Vocalization"/>
+            <xs:enumeration value="Whistles"/> 
+          </xs:restriction>
+	    -->
+
+  <xs:simpleType name="species_TYPE">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <!--
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Anthro"/>
+            <xs:enumeration value="BW40"/>
+            <xs:enumeration value="BW43"/>
+            <xs:enumeration value="BW50"/>
+            <xs:enumeration value="BW65"/>
+            <xs:enumeration value="BWC"/>
+            <xs:enumeration value="BWP"/>
+            <xs:enumeration value="Ba"/>
+            <xs:enumeration value="Bb"/>
+            <xs:enumeration value="Bb1"/>
+            <xs:enumeration value="Be"/>
+            <xs:enumeration value="Bm"/>
+            <xs:enumeration value="Bp"/>
+            <xs:enumeration value="Dc"/>
+            <xs:enumeration value="Dd"/>
+            <xs:enumeration value="Er"/>
+            <xs:enumeration value="Gg"/>
+            <xs:enumeration value="Gm"/>
+            <xs:enumeration value="Lb"/>
+            <xs:enumeration value="Lo"/>
+            <xs:enumeration value="Md"/>
+            <xs:enumeration value="Mn"/>
+            <xs:enumeration value="Oo"/>
+            <xs:enumeration value="Other"/>
+            <xs:enumeration value="Pc"/>
+            <xs:enumeration value="Pd"/>
+            <xs:enumeration value="Pm"/>
+            <xs:enumeration value="Sc"/>
+            <xs:enumeration value="UBW"/>
+            <xs:enumeration value="UF"/>
+            <xs:enumeration value="UMM"/>
+            <xs:enumeration value="UO"/>
+            <xs:enumeration value="UP"/>
+            <xs:enumeration value="UW"/>
+            <xs:enumeration value="Zc1"/>
+        </xs:restriction>
+	    -->
+
+  <xs:complexType name="Effort_TYPE">
+    <xs:sequence>
+      <xs:element name="Start" type="xs:dateTime"/>
+      <xs:element name="End" type="xs:dateTime"/>
+      <xs:element name="Kind" maxOccurs="unbounded" type="Kind_TYPE"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Kind_TYPE">
+    <xs:sequence>
+      <xs:element name="SpeciesCode" type="species_TYPE"/>
+      <xs:element name="CommonName" type="xs:string"/>
+      <xs:element name="Call" type="call_TYPE" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+
+  </xs:complexType>
+
+
+  <xs:complexType name="Detection_TYPE">
+    <xs:sequence>
+      <xs:element name="Input_file" type="xs:string"/>
+      <xs:element name="Start" type="xs:dateTime"/>
+      <xs:element name="End" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="Event_Number" minOccurs="0">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:dateTime">
+              <xs:attribute name="oldnum"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SpeciesCode" type="species_TYPE"/>
+      <xs:element name="Comments" type="xs:string" minOccurs="0"/>
+      <xs:element name="Call" type="call_TYPE"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="ReceivedLevel" type="xs:double"/>
+      <xs:element minOccurs="0" maxOccurs="1" name="Structure" type="Structure"/>
+      <xs:element name="Image" type="xs:string" minOccurs="0"/>
+      <xs:element name="Audio" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  
+  <xs:complexType name="Structure">
+    <xs:sequence>
+      <xs:any maxOccurs="unbounded" namespace="##any" processContents="skip"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

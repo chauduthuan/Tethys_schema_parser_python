@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://tethys.sdsu.edu/schema/1.0"
+  xmlns="http://tethys.sdsu.edu/schema/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified">
+  <xs:include schemaLocation="CommonElements.xsd"/>
+  <xs:element name="Localize">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Id" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Identification string that is unique to all documents of this type</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Description" type="DescriptionType" minOccurs="0"/>
+        <xs:element name="DataSource" type="DataSourceType"/>
+        <xs:element name="Algorithm" type="AlgorithmType"/>
+        <xs:element name="ResponsibleParty" type="ResponsibleParty">
+          <xs:annotation>
+            <xs:documentation>Person/organization responsible for generating metadata</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="UserID" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>User that submitted the document.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="Effort">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CoordinateSystem">
+                <xs:annotation>
+                  <xs:documentation>Cartesian or spherical
+</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Type">
+                      <xs:annotation>
+                        <xs:documentation>How are positions represented:
+WGS84:  global positioning system lat/long
+cartesian: m relative to a point
+UTM: universal trans Mercatur map-projection</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Cartesian"/>
+                          <xs:enumeration value="WGS84"/>
+                          <xs:enumeration value="UTM"/>
+                          <xs:enumeration value="Bearing"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Relative" type="RelativeLocType" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>For bearings, this gives the direction vector for the zero bearing.  For cartesian coordinates, this provides the zero point relative to the deployment position.  WHAT DOES THIS MEAN FOR AN ENSEMBLE?</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="UTM" type="UTMType" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Parameters for Universal Trans Mercatur projections.
+NEED TO INVESTIGATE FURTHER AS TO WHETHER THIS OR ANY OTHER PROJECTION IS WORTH ADDING</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" name="ReferencedDocuments">
+                <xs:complexType>
+                  <xs:sequence maxOccurs="unbounded" minOccurs="1">
+                    <xs:element name="Document">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Type">
+                            <xs:annotation>
+                              <xs:documentation>What type of document is being referenced?
+Detections or Localizations</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Detections"/>
+                                <xs:enumeration value="Localizations"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="Id" type="xs:string">
+                            <xs:annotation>
+                              <xs:documentation>Unique identifier string for the document being referenced.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="Index" type="xs:nonNegativeInteger">
+                            <xs:annotation>
+                              <xs:documentation>All localizations that wish to reference other detections or localizations from the referenced document should use this index value.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Localizations">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="Localization" type="LocalizationType"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element minOccurs="0" name="MetadataInfo" type="MetadataInfo">
+          <xs:annotation>
+            <xs:documentation>Party responsible for this record.  Some applications may make this mandatory.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="RelativeLocType">
+    <xs:choice>
+      <xs:element name="Bearing" type="DirectionVectorType"/>
+      <xs:element name="Point" type="R3Point"/>
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="UTMType">
+    <xs:annotation>
+      <xs:documentation>Universal Transverse Mercator coordinates
+</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Ellipsoid" type="xs:NCName"/>
+      <xs:element name="Zone" type="xs:NMTOKEN">
+        <xs:annotation>
+          <xs:documentation>NS zone [1-60].  Each zone covers 80°S to 84°N in 6° width zones.  Zone 1 180 is 180-186° E with increasing zone #s corresponding to 6° eastward increments.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="x_m" type="xs:decimal"/>
+      <xs:element name="y_m" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AbsoluteLocType">
+    <xs:choice> </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="DirectionVectorType">
+    <xs:annotation>
+      <xs:documentation>Designed to be a subset of OpenGML DirectionVectorType:  
+http://schemas.opengis.net/gml/3.1.1/base/direction.xsd
+
+Unlike the OpenGML, direction may not be specified as a vector, and the verticalAngle is optional.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="horizontalAngle">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:double">
+              <xs:attribute fixed="deg" name="uom" use="optional"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="verticalAngle" maxOccurs="1" minOccurs="0">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:double">
+              <xs:attribute fixed="deg" name="uom"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DirectionWErrorType">
+    <xs:complexContent>
+      <xs:extension base="DirectionVectorType">
+        <xs:sequence>
+          <xs:element name="StdError" type="DirectionVectorType">
+            <xs:annotation>
+              <xs:documentation>Standard error in degrees for the measurement.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="R3Point">
+    <xs:sequence>
+      <xs:element name="x_m" type="xs:decimal"/>
+      <xs:element name="y_m" type="xs:decimal"/>
+      <xs:element name="z_m" type="xs:decimal" default="0.0" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="R3PointWErrorType">
+    <xs:complexContent>
+      <xs:extension base="R3Point">
+        <xs:sequence>
+          <xs:element name="StdError" type="R3Point"/>
+          <xs:element minOccurs="0" name="BearingIDs">
+            <xs:annotation>
+              <xs:documentation>If multiple bearings were used to create this localization, their ids can be provided.</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element maxOccurs="unbounded" name="EventRef" type="EventType">
+                  <xs:annotation>
+                    <xs:documentation>Reference to individual bearing within this XML document.</xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="OrientationType">
+    <xs:sequence>
+      <xs:element name="Latitude" type="xs:decimal"/>
+      <xs:element name="Longitude" type="xs:decimal"/>
+      <xs:element name="Depth" type="xs:decimal"/>
+      <xs:element name="Timestamp" type="xs:dateTime"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="LocalizationType">
+    <xs:sequence>
+      <xs:element name="Event" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Optional tag typically in ISO datetime format YYYY-MM-DDTHH:MM:SSZ identifying this event uniquely within the stream.  For human analysts, it is typical to use the time at which the detection was made.  When present, the combination of the event and attributes that uniquely identify the set of detections (or document name) must be uniqe.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Time" type="xs:dateTime">
+        <xs:annotation>
+          <xs:documentation>Time of localization in reference time frame (e.g. time of arrival at primary hydrophone)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="References" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation/>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence maxOccurs="1" minOccurs="1">
+            <xs:element name="TimeReferenceEnsembleUnit" type="xs:nonNegativeInteger" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>STILL NEEDED?
+Time references which unit of the ensemble (see TimeReferenceChannel) when ensembles are used.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="TimeReferenceChannel" type="xs:nonNegativeInteger" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>STILL NEEDED? 
+Events are detected at different times on different channels, making it necessary to provide the instrument and channel on which the timestamp references.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Reference">
+              <xs:annotation>
+                <xs:documentation>Detections/localization used in constructing this localization.
+</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="Index" type="xs:nonNegativeInteger">
+                    <xs:annotation>
+                      <xs:documentation>Must match instance of Index in ReferencedDocuments.  This permits identification of a specific document.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="EventRef" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>Event identifier that uniquely identifies a detection or localization within a referenced document.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:choice>
+        <xs:element name="Bearing" type="DirectionWErrorType"/>
+        <xs:element name="Cartesian">
+          <xs:complexType>
+            <xs:complexContent>
+              <xs:extension base="R3PointWErrorType">
+                <xs:group ref="LongLat3"/>
+              </xs:extension>
+            </xs:complexContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="WGM84">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:group ref="LongLat3"/>
+              <xs:element name="StdError" minOccurs="0">
+                <xs:complexType>
+                  <xs:group ref="LongLat3"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ReferencesType">
+    <xs:choice> </xs:choice>
+  </xs:complexType>
+</xs:schema>

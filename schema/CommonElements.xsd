@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://tethys.sdsu.edu/schema/1.0"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified"
+    xmlns:ns1="http://tethys.sdsu.edu/schema/1.0">
+
+    <xs:complexType name="DescriptionType">
+        <xs:annotation>
+            <xs:documentation>Text based description of process.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Objectives" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>What are the objectives of this effort?  Examples:
+Beamform to increase SNR for detection.
+Detect every click of a rare species.
+Verify data quality.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Abstract" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Overview of effort.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Method" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>High-level description of the method used.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DataSourceType">
+        <xs:annotation>
+            <xs:documentation>Indicates the deployment or ensemble from which the process (e.g. detector) derived information.</xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="EnsembleName" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Name of a group of instruments being used together for a common purpose (e.g. large aperture array).  The Name will correspond to an instance in the Ensemble collection.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:sequence>
+                <xs:annotation>
+                    <xs:documentation>Information that identifies a specific deployment within the Deployment collection.</xs:documentation>
+                </xs:annotation>
+                <xs:element name="Project" type="xs:string"/>
+                <xs:element name="Deployment" type="xs:integer"/>
+                <xs:choice>
+                    <xs:element name="Site" type="xs:string"/>
+                    <xs:element name="Cruise" type="xs:string"/>
+                </xs:choice>
+            </xs:sequence>
+        </xs:choice>
+    </xs:complexType>
+
+
+    <xs:complexType name="AlgorithmType">
+        <xs:annotation>
+            <xs:documentation>Description of detection algorithm</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element minOccurs="0" name="Method" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Text based description of algorithm or citation
+</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Software" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Name of software that implements the algorithm.  This might be the name of a plug-in or extension module that is part of a larger program or system.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Version" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Software version identifier</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Parameters">
+                <xs:annotation>
+                    <xs:documentation>Structured tags to describe parameters used in algorithm execution.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##any"
+                            processContents="skip"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SupportSoftware" maxOccurs="unbounded" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Software required in addition to the algorithm itself, e.g. Matlab, Ishmael, XBAT, Triton, etc.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Software" type="xs:string"/>
+                        <xs:element name="Version" type="xs:string" minOccurs="0"/>
+                        <xs:element name="Parameters" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Structured tags to describe parameters used in algorithm execution.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##any"
+                                        processContents="skip"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="QualityAssuranceProcessType">
+        <xs:sequence>
+            <xs:element name="Description" type="ns1:DescriptionType" minOccurs="0"/>
+            <xs:element name="ResponsibleParty" type="ns1:ResponsibleParty" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:group name="ContactGroup">
+        <xs:annotation>
+            <xs:documentation>Contains a subset of the OpenGIS SensorML ContactGroup
+(http://www.opengis.net/sensorML/1.0).  Parsing the full SensorML schema will slow down processing.
+</xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="Person" type="ns1:Person"/>
+            <xs:element name="ResponsibleParty" type="ns1:ResponsibleParty"/>
+        </xs:choice>
+    </xs:group>
+    <xs:complexType name="Person">
+
+        <xs:sequence>
+            <xs:element name="surname" type="xs:token"/>
+            <xs:element name="name" type="xs:token"/>
+            <xs:element name="userID" type="xs:token"/>
+            <xs:element name="affiliation" type="xs:token"/>
+            <xs:element name="phoneNumber" type="xs:token"/>
+            <xs:element name="email" type="xs:token"/>
+        </xs:sequence>
+
+        <xs:attribute name="id" type="xs:NCName">
+            <xs:annotation>
+                <xs:documentation>Handle to external database
+</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="ResponsibleParty">
+        <xs:annotation>
+            <xs:documentation>based on ISO 19115</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element minOccurs="0" name="individualName" type="xs:string"/>
+            <xs:element minOccurs="0" name="organizationName" type="xs:string"/>
+            <xs:element minOccurs="0" name="positionName" type="xs:string"/>
+            <xs:element minOccurs="0" name="contactInfo" type="ns1:contactInfo"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:NCName">
+            <xs:annotation>
+                <xs:documentation>Handle to external database</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+
+    </xs:complexType>
+    <xs:complexType name="contactInfo">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="phone">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="voice"
+                            type="xs:string"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="facsimile"
+                            type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="address">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="deliveryPoint"
+                            type="xs:string"/>
+                        <xs:element minOccurs="0" name="city" type="xs:string"/>
+                        <xs:element minOccurs="0" name="administrativeArea" type="xs:string"/>
+                        <xs:element minOccurs="0" name="postalCode" type="xs:string"/>
+                        <xs:element minOccurs="0" name="country" type="xs:string"/>
+                        <xs:element minOccurs="0" name="electronicMailAddress" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="onlineResource">
+                <xs:annotation>
+                    <xs:documentation>We do not fully conform to the onlineResources of ISO 19115</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:anyAttribute namespace="##any"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="hoursOfService" type="xs:string"/>
+            <xs:element minOccurs="0" name="contactInstructions" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:group name="LongLat">
+        <xs:annotation>
+            <xs:documentation>Spherical reference system</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Longitude" type="xs:double">
+                <xs:annotation>
+                    <xs:documentation>Expressed in degrees East [0, 360)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Latitude" type="xs:double">
+                <xs:annotation>
+                    <xs:documentation>Expressed in degrees North [-90, 90]</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="LongLat3">
+        <xs:sequence>
+            <xs:element name="Longitude" type="xs:double">
+                <xs:annotation>
+                    <xs:documentation>Expressed in degrees East [0, 360)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Latitude" type="xs:double">
+                <xs:annotation>
+                    <xs:documentation>Expressed in degrees North [-90, 90]</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Altitude_m" type="xs:double" maxOccurs="1" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Optional altitude (negative for depth) in meters</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:group>
+    <xs:complexType name="SpeciesIDType">
+        <xs:annotation>
+            <xs:documentation>Integrated Taxonomic Information System species identifier http://www.itis.gov/ for positive numbers.
+            Negative numbers are interpreted by collection("phenomena"). 
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:integer">
+                <xs:attribute name="Group" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="CallType">
+        <xs:annotation>
+            <xs:documentation>Description of a call
+</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Call name</xs:documentation>
+                </xs:annotation>
+                <xs:attribute name="SubType" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:simpleType name="EventType">
+        <xs:annotation>
+            <xs:documentation>Event identifier.  Optional tag typically in ISO datetime format YYYY-MM-DDTHH:MM:SSZ identifying this event uniquely within the stream (detections, localizations, etc.).  
+For human analysts, it is typical to use the time at which the detection was made.  When used, the combination of the event and attributes that uniquely identify the set of detections (or document name) must be unique.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="BearingDeg">
+        <xs:restriction base="xs:double">
+            <xs:minInclusive value="0"/>
+            <xs:maxExclusive value="360"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="MetadataInfo">
+        <xs:annotation>
+            <xs:documentation>Information about who is responsible for this metadata record, when it was created, and how often it is updated.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Contact" type="ns1:ResponsibleParty"/>
+            <xs:element name="Date" type="xs:dateTime"/>
+            <xs:element name="UpdateFrequency">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="as-needed"/>
+                        <xs:enumeration value="unplanned"/>
+                        <xs:enumeration value="yearly"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

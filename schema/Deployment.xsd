@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://tethys.sdsu.edu/schema/1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tethys.sdsu.edu/schema/1.0"
+  elementFormDefault="unqualified">
+<!-- 
+Imports that indicate schemaLocation, suitable for deployment
+xmlns:sml="http://www.opengis.net/sensorML/1.0" xmlns:elementFormDefault="qualified" version="1.1"
+<xs:import namespace="http://www.opengis.net/sensorML/1.0"
+schemaLocation="sensorML/1.0.0/sensorML.xsd"/> 
+-->
+
+<!-- 
+Imports w/o schemaLocation, suitable for development
+(our schema tool slows down when these are included)
+-->
+<!-- <xs:import namespace="http://www.opengis.net/sensorML/1.0"/> -->
+
+<!-- no longer used -->
+<!-- xmlns:gml="http://www.opengis.net/gml/3.2" -->
+<!--<xs:import namespace="http://www.opengis.net/gml/3.2" 
+schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd" /> -->
+
+
+<!-- Document instance type -->
+<xs:include schemaLocation="CommonElements.xsd"/>
+<xs:element name="Deployment">
+  <xs:complexType mixed="true">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element name="Project" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Name of project associated with this deployment.  Can be related to a geographic region, funding source, etc.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="DeploymentID" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Deployment identifier, a number related to either the Nth deployment operation in a series of deployments or the Nth deployment at a specific site.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="DeploymentAlias" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Alternative deployment description.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:choice>
+        <xs:annotation>
+          <xs:documentation>Deployment must be associated with a site or a cruise.  </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element name="Site" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Name for current location.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Cruise" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>Name of deployment cruise.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="SiteAliases" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>Alternative names for the deployment location</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence maxOccurs="unbounded">
+                <xs:element name="Site" type="xs:string"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:element name="Cruise" type="xs:string" minOccurs="1">
+          <xs:annotation>
+            <xs:documentation>Name of deployment cruise.</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:choice>
+      <xs:element name="Platform" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>On what platform is the instrument deployed? (e.g. mooring, tag)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Region" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Name of geographic region.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Instrument">
+        <xs:annotation>
+          <xs:documentation>Instrument type and identifier.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Type" type="xs:string">
+              <xs:annotation>
+                <xs:documentation>Instrument type, e.g. HARP, EAR, Popup, DMON, etc.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="ID" type="xs:string">
+              <xs:annotation>
+                <xs:documentation>Instrument identifier, e.g. serial number</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="SamplingDetails">
+        <xs:annotation>
+          <xs:documentation>Information about recordings on each channel. Sample rate, quantization bits, etc.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence maxOccurs="unbounded">
+            <xs:element name="Channel" type="ChannelInfo"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="QualityAssurance" type="AcousticDataQAType"/>
+      <xs:element name="Data">
+        <xs:annotation>
+          <xs:documentation>Data from instrument, a URI is provided when not present (typical for audio).</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Audio">
+              <xs:annotation>
+                <xs:documentation>Information about audio data.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="URI" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>Uniform Resource Indicator point to audio content.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="Processed" minOccurs="0" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>Pointer to location of data that has been processed (e.g. checked for quality, decimated, etc.)</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                  <xs:element name="Raw" minOccurs="0" type="xs:string">
+                    <xs:annotation>
+                      <xs:documentation>Pointer to raw data from the instrument.</xs:documentation>
+                    </xs:annotation>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="Track">
+              <xs:annotation>
+                <xs:documentation>A set of measurements about a ship/instrument's track line.</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element maxOccurs="unbounded" minOccurs="0" name="Points">
+                    <xs:annotation>
+                      <xs:documentation>A set of sorted (by time) points associated with one or more tracklines.</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element minOccurs="0" name="Trackline" type="xs:double">
+                          <xs:annotation>
+                            <xs:documentation>Optional trackline number.
+                              If unimportant, everything can be put in one Points element.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="Point" maxOccurs="unbounded">
+                            <xs:annotation>
+                              <xs:documentation>Timestamped measurements:  long/lat, bearing, etc.
+                                Points should be sorted by timestamp.</xs:documentation>
+                              </xs:annotation>
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="TimeStamp" type="xs:dateTime"/>
+                                  <xs:group minOccurs="0" ref="LongLat"/>
+                                  <xs:element minOccurs="0" name="Bearing_DegN">
+                                    <xs:annotation>
+                                      <xs:documentation>Bearing in degrees [0, 360) relative to true or magnetic north (as specified by north attribute, default magnetic)</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:complexType>
+                                      <xs:simpleContent>
+                                        <xs:extension base="BearingDeg">
+                                          <xs:attribute default="magnetic" name="north">
+                                            <xs:simpleType>
+                                              <xs:restriction base="xs:string">
+                                                <xs:enumeration value="true"/>
+                                                <xs:enumeration value="magnetic"/>
+                                              </xs:restriction>
+                                            </xs:simpleType>
+                                          </xs:attribute>
+                                        </xs:extension>
+                                      </xs:simpleContent>
+                                    </xs:complexType>
+                                  </xs:element>
+                                  <xs:element name="Speed_kn" type="xs:double" minOccurs="0">
+                                    <xs:annotation>
+                                      <xs:documentation>Speed in knots</xs:documentation>
+                                    </xs:annotation>
+                                  </xs:element>
+                                  <xs:element minOccurs="0" name="Pitch_deg">
+                                    <xs:annotation>
+                                      <xs:documentation>Instrument pitch [0, 360) degrees</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:double">
+                                        <xs:minInclusive value="0"/>
+                                        <xs:maxExclusive value="360"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element minOccurs="0" name="Roll_deg">
+                                    <xs:annotation>
+                                      <xs:documentation>Instrument roll [0, 360) degrees</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                      <xs:restriction base="xs:double">
+                                        <xs:minInclusive value="0"/>
+                                        <xs:maxExclusive value="360"/>
+                                      </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:element>
+                                  <xs:element minOccurs="0" name="Depth_m" type="xs:double">
+                                    <xs:annotation>
+                                      <xs:documentation>Instrument depth in meters</xs:documentation>
+                                    </xs:annotation>
+                                  </xs:element>
+                                  <xs:element name="BottomDepth_m" type="xs:double" minOccurs="0">
+                                    <xs:annotation>
+                                      <xs:documentation>Bottom depth in meters</xs:documentation>
+                                    </xs:annotation>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element minOccurs="0" name="TrackEffort">
+                        <xs:annotation>
+                          <xs:documentation>Not all measurements are associated with an instrument/ship's planned trackline (e.g. when in chase mode or transiting between tracklines).  Specify times for track effort here if needed.
+                          </xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:sequence>
+                              <xs:element minOccurs="1" name="OnPath" type="PathElementType"
+                                maxOccurs="unbounded"/>
+                                <xs:element maxOccurs="unbounded" minOccurs="0" name="OffPath"
+                                  type="PathElementType"/>
+                                </xs:sequence>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="URI" maxOccurs="unbounded" type="xs:string" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Pointer to trackline information.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="DeploymentDetails" type="DeploymentRecoveryDetails">
+                <xs:annotation>
+                  <xs:documentation>Instrument deployment location, time, etc.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+
+              <xs:element name="RecoveryDetails" type="DeploymentRecoveryDetails" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Instrument recovery, location, time, etc.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Sensors">
+                <xs:annotation>
+                  <xs:documentation>Sensors on instrument.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Audio" maxOccurs="unbounded" type="Audio" minOccurs="0"/>
+                    <xs:element name="Depth" maxOccurs="unbounded" type="genericSensor" minOccurs="0"/>
+                    <xs:element name="Sensor" maxOccurs="unbounded" type="unknownSensor" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+          <xs:key name="DeploymentKey">
+            <xs:selector xpath="."/>
+            <xs:field xpath="Project"/>
+            <xs:field xpath="DeploymentID"/>
+            <xs:field xpath="Site"/>
+            <xs:field xpath="Cruise"/>
+          </xs:key>
+        </xs:element>
+
+
+        <!-- Sensor types -->
+        <xs:complexType name="genericSensor">
+          <xs:sequence minOccurs="1" maxOccurs="1">
+            <xs:element name="Number" type="xs:integer"/>
+            <xs:element name="SensorID" type="xs:string"/>
+            <xs:element name="Geometry" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Geometry relative to platform
+                </xs:documentation>
+              </xs:annotation>
+              <xs:complexType mixed="true">
+                <xs:choice minOccurs="0" maxOccurs="1">
+                  <xs:element name="x_m" type="xs:double"/>
+                  <xs:element name="y_m" type="xs:double"/>
+                  <xs:element name="z_m" type="xs:double"/>
+                </xs:choice>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="Name" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Optional sensor name</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="Description" type="xs:string">
+              <xs:annotation>
+                <xs:documentation>Optional description of sensor</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="unknownSensor">
+          <xs:complexContent>
+            <xs:extension base="genericSensor">
+              <xs:sequence>
+                <xs:element name="Type" type="xs:string"/>
+                <xs:element name="Properties">
+                  <xs:complexType>
+                    <xs:sequence maxOccurs="1">
+                      <xs:any namespace="##any" processContents="skip" maxOccurs="unbounded" minOccurs="0"
+                        />
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:extension>
+            </xs:complexContent>
+          </xs:complexType>
+          <xs:complexType name="Audio">
+            <xs:complexContent>
+              <xs:extension base="genericSensor">
+                <xs:sequence minOccurs="0">
+                  <xs:element minOccurs="0" name="HydrophoneID" type="xs:string"/>
+                  <xs:element minOccurs="0" name="PreampID" type="xs:string"/>
+                </xs:sequence>
+              </xs:extension>
+            </xs:complexContent>
+          </xs:complexType>
+
+          <xs:complexType name="ChannelInfo">
+            <xs:sequence maxOccurs="unbounded">
+              <xs:element name="ChannelNumber" type="xs:nonNegativeInteger">
+                <xs:annotation>
+                  <xs:documentation>Channels and sensors are bound together from Start to End.  While not enforced, we assume channels are numbered from 1 to N.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="SensorNumber" type="xs:int">
+                <xs:annotation>
+                  <xs:documentation>Audio sensor index within the Sensors element.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="Start" type="xs:dateTime"/>
+              <xs:element name="End" type="xs:dateTime"/>
+              <xs:element name="Sampling">
+                <xs:annotation>
+                  <xs:documentation>Sampling rate and quantization may change over time.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="1" name="Regimen">
+                      <xs:annotation>
+                        <xs:documentation>Sampling regimen may change over time.  Each entry shows the start of a sampling configuration.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="TimeStamp" type="xs:dateTime"/>
+                          <xs:element name="SampleRate_kHz" type="xs:double"/>
+                          <xs:element name="SampleBits" type="xs:int"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Gain" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Initial gain setting (assumed 0 if not populated) and any subsequent changes.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Regimen">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="TimeStamp" type="xs:dateTime"/>
+                          <xs:choice>
+                            <xs:element name="Gain_dB" type="xs:double"/>
+                            <xs:element name="Gain_rel" type="xs:double">
+                              <xs:annotation>
+                                <xs:documentation>Only used if gain is not calibrated.  Relative gain may be a number on a dial.</xs:documentation>
+                              </xs:annotation>
+                            </xs:element>
+                          </xs:choice>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="DutyCycle" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Duty cycle is represented by the recording duration and the interval from the start of one recording session to the next.  A duration of 3 m and an interval of 5 m would represent a 60% duty cycle, 3 m on, 2 m off.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Regimen" nillable="false">
+                      <xs:annotation>
+                        <xs:documentation>Duty cycling regimen may change over time.  Each entry shows the start of a duty cycle configuration.  The abscence of entries indicates continuous sampling as would having equal values in RecordingDuration_m and RecordingInterval_m.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="TimeStamp" type="xs:dateTime"/>
+                          <xs:element name="RecordingDuration_m" type="xs:double"/>
+                          <xs:element name="RecordingInterval_m" type="xs:double"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+          <xs:complexType name="DeploymentRecoveryDetails">
+            <xs:sequence>
+              <xs:group ref="LongLat"/>
+              <xs:element name="DepthInstrument_m" type="xs:double" minOccurs="0"/>
+              <xs:element name="DepthBottom_m" type="xs:double" minOccurs="0"/>
+              <xs:element name="TimeStamp" type="xs:dateTime">
+                <xs:annotation>
+                  <xs:documentation>Time at which instrument was deployed/recovered.
+                    Lost instruments: set recovery time to deployment time.</xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="AudioTimeStamp" type="xs:dateTime">
+                  <xs:annotation>
+                    <xs:documentation>Recording start or end - May differ from deployment time.</xs:documentation>
+                  </xs:annotation>
+                </xs:element>
+                <xs:element name="Vessel" minOccurs="0" type="xs:string"/>
+                <xs:group ref="ContactGroup" minOccurs="0"/>
+              </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="AcousticDataQAType">
+              <xs:complexContent>
+                <xs:extension base="QualityAssuranceProcessType">
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" name="Quality">
+                      <xs:annotation>
+                        <xs:documentation>If no quality assurance, create an entry of Category unverified spanning the acoustic record.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence maxOccurs="1">
+                          <xs:element name="Start" type="xs:dateTime"/>
+                          <xs:element name="End" type="xs:dateTime"/>
+                          <xs:element name="Category">
+                            <xs:annotation>
+                              <xs:documentation>categories: unverified, good, compromised, unusable</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="unverified"/>
+                                <xs:enumeration value="good"/>
+                                <xs:enumeration value="compromised"/>
+                                <xs:enumeration value="unusable"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element minOccurs="0" name="FrequencyRange">
+                            <xs:annotation>
+                              <xs:documentation>QA metric applies to what frequency range?</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="Low_Hz" type="xs:double"/>
+                                <xs:element name="High_Hz" type="xs:double"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element maxOccurs="unbounded" minOccurs="0" name="Channel" type="xs:integer"/>
+                          <xs:element minOccurs="0" name="Comment" type="xs:string">
+                            <xs:annotation>
+                              <xs:documentation>Additional qualitative information</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:extension>
+              </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="PathElementType">
+              <xs:sequence maxOccurs="1" minOccurs="0">
+                <xs:element minOccurs="0" name="Trackline" type="xs:double"/>
+                <xs:element name="Start" type="xs:dateTime"/>
+                <xs:element name="End" type="xs:dateTime"/>
+                <xs:element minOccurs="0" name="Comment" type="xs:string"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:schema>

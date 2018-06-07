@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://tethys.sdsu.edu/schema/1.0" elementFormDefault="unqualified"
+    xmlns="http://tethys.sdsu.edu/schema/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:include schemaLocation="CommonElements.xsd"/>
+    <xs:element name="Detections">
+        <xs:complexType>
+            <xs:sequence>
+
+                <xs:element name="Id" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Identification string that is unique to all documents of this type</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Description" type="DescriptionType" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Objectives, abstract and high-level methods.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="DataSource" type="DataSourceType">
+                    <xs:annotation>
+                        <xs:documentation>Acoustic data identifier.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Algorithm" type="AlgorithmType">
+                    <xs:annotation>
+                        <xs:documentation>Detailed methods.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+
+                <xs:element minOccurs="0" name="QualityAssurance" type="QualityAssuranceProcessType">
+                    <xs:annotation>
+                        <xs:documentation>Description of quality assurance checks (if any).</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="UserID" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>User that submitted the document.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Effort" maxOccurs="1" type="DetectionEffort">
+                    <xs:annotation>
+                        <xs:documentation>Span and scope of detection effort.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="OnEffort" type="DetectionGroup">
+                    <xs:annotation>
+                        <xs:documentation>Collection of individual detections.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="OffEffort" minOccurs="0" type="DetectionGroup">
+                    <xs:annotation>
+                        <xs:documentation>Collection of off-effort (ad-hoc) detections.  Each detection has the same format as the OnEffort ones.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="MetadataInfo" type="MetadataInfo">
+                    <xs:annotation>
+                        <xs:documentation>Party responsible for this record.  Some applications may make this mandatory.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="DetectionEffort">
+        <xs:sequence>
+            <xs:element name="Start">
+                <xs:simpleType>
+                    <xs:restriction base="xs:dateTime">
+                        <xs:whiteSpace value="collapse"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="End">
+                <xs:simpleType>
+                    <xs:restriction base="xs:dateTime">
+                        <xs:whiteSpace value="collapse"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="Kind" type="DetectionEffortKind"> </xs:element>
+            </xs:sequence>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DetectionEffortKind">
+        <xs:sequence maxOccurs="1">
+            <xs:element name="SpeciesID" type="SpeciesIDType"/>
+            <xs:element name="Call" type="CallType"/>
+            <xs:element minOccurs="0" name="Parameters">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="Subtype" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>subcategory of call</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Granularity" type="granularityType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DetectionGroup">
+        <xs:sequence>
+            <xs:element name="Detection" minOccurs="0" maxOccurs="unbounded" type="Detection"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Detection">
+        <xs:sequence>
+            <xs:element name="Input_file" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Optional name of audio file (or indirect representation) from which this detection was generated.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Start">
+                <xs:annotation>
+                    <xs:documentation>Time at which event started.  For many detectors, this may not the actual starting time of the event.
+</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:dateTime">
+                        <xs:whiteSpace value="collapse"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="End" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Optional end time of event.</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:dateTime">
+                        <xs:whiteSpace value="collapse"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element minOccurs="0" name="Count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>For binned and encounter, provide an optional number of times the call occurred.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Event" minOccurs="0" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Optional tag for identifying this event uniquely within the stream.  For human analysts, it is typical to use the time at which the detection was made in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ).  When present, the combination of the event and attributes that uniquely identify the set of detections (or document name) must be uniqe.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="UnitID" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>Specifies ensemble unit (when using an ensemble source).</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Channel" type="xs:integer" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation/>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="SpeciesID" type="SpeciesIDType"/>
+            <xs:element name="Call" maxOccurs="unbounded" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>In most cases, the call field should be present.  May be omitted if the goal is species detection only, or repeated for multiple types of calls when the granularity effort is not "call".</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="CallType">
+                            <xs:attribute name="Count" type="xs:int">
+                                <xs:annotation>
+                                    <xs:documentation>For binned and encounter level detections, may be used to denote the count of a particular call type.</xs:documentation>
+                                </xs:annotation>
+                            </xs:attribute>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="Parameters">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="Subtype" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>subcategory of call
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="Score" type="xs:double">
+                            <xs:annotation>
+                                <xs:documentation>Measure from detector, e.g. likelihood ratio, projection, etc.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="Confidence">
+                            <xs:annotation>
+                                <xs:documentation>Measure of confidence in detection. Range: [0, 1]</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:restriction base="xs:double">
+                                    <xs:minInclusive value="0"/>
+                                    <xs:maxInclusive value="1"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="QualityAssurance">
+                            <xs:annotation>
+                                <xs:documentation>Detection is: unverified, valid, invalid</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="unverified"/>
+                                    <xs:enumeration value="valid"/>
+                                    <xs:enumeration value="invalid"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="ReceivedLevel_dB" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>dB re 1 µPa</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="SNR_dB" type="xs:double"/>
+                        <xs:element minOccurs="0" name="MinFreq_Hz" type="xs:double"/>
+                        <xs:element minOccurs="0" name="MaxFreq_Hz" type="xs:double"/>
+                        <xs:element name="PeakFreq_Hz" type="xs:double" minOccurs="0"/>
+                        <xs:element name="Peaks_Hz" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Typically used for spectra of short echolocation bursts, notes the spectral peaks in a list sorted from low to high frequency.</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:list itemType="xs:double"/>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="Duration_s" type="xs:double">
+                            <xs:annotation>
+                                <xs:documentation>When the call granularity is binned or encounter, this may be used to describe the mean duration of calls during the bout.  As an example, at SIO we use this to track the mean duration of binned anthropogenic sources such as explosions. </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="Sideband_Hz" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Signal sideband frequencies in a list sorted from low to high frequency.</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:list itemType="xs:double"/>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="EventRef"
+                            type="EventType">
+                            <xs:annotation>
+                                <xs:documentation>Reference to other detections for hierarchical organization.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="UserDefined">
+                            <xs:annotation>
+                                <xs:documentation>Study specific parameters
+
+</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                                    <xs:any namespace="##any" minOccurs="0" processContents="skip"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="Image" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Name of image file (spectrogram, etc.)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="Audio" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Name of audio file (short snippet)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="Comment" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="granularityEnumType">
+        <xs:annotation>
+            <xs:documentation/>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="call"/>
+            <xs:enumeration value="encounter"/>
+            <xs:enumeration value="binned"/>
+            <xs:whiteSpace value="collapse"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="granularityType">
+        <xs:annotation>
+            <xs:documentation>Type of detections:
+call - individual call,
+encounter - set of calls,
+binned - presence detected within period specified by bin size attribute in Effort.
+
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:annotation>
+                <xs:documentation>On what scale are detections made?
+                    See granularityEnumType.  Binned data spans are
+                    relative to midnight on the start of effort date
+                    and are of timespan binsize_m.
+                </xs:documentation>
+            </xs:annotation>
+
+            <xs:extension base="granularityEnumType">
+                <xs:attribute name="BinSize_m" type="xs:double">
+                    <xs:annotation>
+                        <xs:documentation>Presence/count is reported every N minutes.  Must be evenly divisible into 24 hours.  Bins start at midnight.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="FirstBinStart" type="xs:dateTime">
+                    <xs:annotation>
+                        <xs:documentation>Timestamp of first complete bin for timestamped data.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="EncounterGap_m" type="xs:double">
+                    <xs:annotation>
+                        <xs:documentation>Time between consecutive encounters.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="OffEffortDetection">
+        <xs:annotation>
+            <xs:documentation>Same as a detection except that Call field is not mandatory.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Input_file" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Optional name of audio file (or indirect representation) from which this detection was generated.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Start" type="xs:dateTime">
+                <xs:annotation>
+                    <xs:documentation>Time at which even started.  For many detectors, this may not the actual starting time of the event.
+</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="End" type="xs:dateTime" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Optional end time of event.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Event" minOccurs="0" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Optional tag typically in ISO datetime format YYYY-MM-DDTHH:MM:SSZ identifying this event uniquely within the stream.  For human analysts, it is typical to use the time at which the detection was made.  When present, the combination of the event and attributes that uniquely identify the set of detections (or document name) must be uniqe.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="UnitID" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>Specifies ensemble unit (when using an ensemble source).</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Channel" type="xs:integer" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>How would we describe something derived from multiple channels? e.g. beamformed detection?</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="SpeciesID" type="SpeciesIDType"/>
+            <xs:element name="Call" type="CallType" minOccurs="0"/>
+            <xs:element minOccurs="0" name="Parameters">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="Subtype" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>subcategory of call
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="ReceivedLevel_dB" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>dB re 1 µPa</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="MinFreq_Hz" type="xs:double"/>
+                        <xs:element minOccurs="0" name="MaxFreq_Hz" type="xs:double"/>
+                        <xs:element name="PeakFreq_Hz" type="xs:double" minOccurs="0"/>
+                        <xs:element name="Peaks_Hz" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Typically used for spectra of short echolocation bursts, notes the spectral peaks in a list sorted from low to high frequency.</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:list itemType="xs:double"/>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="Duration_s" type="xs:double">
+                            <xs:annotation>
+                                <xs:documentation>When the call granularity is binned or bout, this may be used to describe the mean duration of calls during the bout.  As an example, at SIO we use this to track the mean duration of binned anthropogenic sources such as explosions. </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="Sideband_Hz" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Signal sideband frequencies in a list sorted from low to high frequency.</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:list itemType="xs:double"/>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="UserDefined">
+                            <xs:annotation>
+                                <xs:documentation>Suggestions for a better name?  We can't just have them appear after Sideband_Hz due to restrictions on the XML schema :-(</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:any namespace="##any" minOccurs="0" processContents="skip"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="Image" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Name of image file (spectrogram, etc.)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="Audio" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Name of audio file (short snippet)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="Comment" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

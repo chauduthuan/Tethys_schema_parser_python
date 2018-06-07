@@ -1,0 +1,17 @@
+<xs:schema xmlns="http://tethys.sdsu.edu/schema/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://tethys.sdsu.edu/schema/1.0" elementFormDefault="unqualified">
+    <xs:include schemaLocation="Detections.v1_2.xsd"/>
+    <xs:include schemaLocation="Deployment.xsd"/>
+    <xs:include schemaLocation="itis.xsd"/>
+    <xs:include schemaLocation="Ensemble.xsd"/>
+    <xs:include schemaLocation="Localization.xsd"/>
+    <xs:include schemaLocation="SpeciesAbbreviations.xsd"/>
+    <xs:include schemaLocation="Calibrations.xsd"/>
+    <xs:element name="Result">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any namespace="##any"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

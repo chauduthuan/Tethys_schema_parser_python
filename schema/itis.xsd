@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://tethys.sdsu.edu/schema/1.0"
+  xmlns="http://tethys.sdsu.edu/schema/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified">
+
+  <xs:complexType name="vernacularType">
+    <xs:sequence>
+      <xs:element name="name" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:token">
+              <xs:attribute name="language" type="xs:token"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="ITIS">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Kingdom" type="KingdomType" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="KingdomType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Subkingdom" nillable="false" type="SubkingdomType"/>
+        <xs:element name="Infrakingdom" type="InfrakingdomType"/>
+        <xs:element name="Phylum" type="PhylumType"/>
+        <xs:element name="Subphylum" type="SubphylumType"/>
+        <xs:element name="Infraphylum" type="InfraphylumType"/>
+        <xs:element name="Superclass" type="SuperclassType"/>
+        <xs:element name="Class" type="ClassType"/>
+        <xs:element name="Subclass" type="SubclassType"/>
+        <xs:element name="Infraclass" type="InfraclassType"/>
+        <xs:element name="Superorder" type="SuperorderType"/>
+        <xs:element name="Order" type="OrderType"/>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PhylumType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Subphylum" type="SubphylumType"/>
+        <xs:element name="Superclass" type="SuperclassType"/>
+        <xs:element name="Class" type="ClassType"/>
+        <xs:element name="Subclass" type="SubclassType"/>
+        <xs:element name="Infraclass" type="InfraclassType"/>
+        <xs:element name="Superorder" type="SuperorderType"/>
+        <xs:element name="Order" type="OrderType"/>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SubphylumType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Infraphylum" type="InfraphylumType"/>
+        <xs:element name="Superclass" type="SuperclassType"/>
+        <xs:element name="Class" type="ClassType"/>
+        <xs:element name="Subclass" type="SubclassType"/>
+        <xs:element name="Infraclass" type="InfraclassType"/>
+        <xs:element name="Superorder" type="SuperorderType"/>
+        <xs:element name="Order" type="OrderType"/>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SuperclassType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Class" type="ClassType"/>
+        <xs:element name="Subclass" type="SubclassType"/>
+        <xs:element name="Infraclass" type="InfraclassType"/>
+        <xs:element name="Superorder" type="SuperorderType"/>
+        <xs:element name="Order" type="OrderType"/>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ClassType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Subclass" type="SubclassType"/>
+        <xs:element name="Infraclass" type="InfraclassType"/>
+        <xs:element name="Superorder" type="SuperorderType"/>
+        <xs:element name="Order" type="OrderType"/>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SubclassType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Infraclass" type="InfraclassType"/>
+        <xs:element name="Superorder" type="SuperorderType"/>
+        <xs:element name="Order" type="OrderType"/>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="InfraclassType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Superorder" type="SuperorderType"/>
+        <xs:element name="Order" type="OrderType"/>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SuperorderType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Order" type="OrderType"/>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="OrderType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SuborderType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Infraorder" type="InfraorderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:complexType name="SuperfamilyType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Tribe" type="TribeType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FamilyType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Tribe" type="TribeType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SubfamilyType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Tribe" type="TribeType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TribeType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GenusType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SubgenusType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SpeciesType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:sequence>
+        <xs:element name="Subspecies" type="SubspeciesType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SubspeciesType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SubkingdomType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element name="Infrakingdom" type="InfrakingdomType"/>
+        <xs:element name="Phylum" type="PhylumType"/>
+        <xs:element name="Subphylum" type="SubphylumType"/>
+        <xs:element name="Superclass" type="SuperclassType"/>
+        <xs:element name="Class" type="ClassType"/>
+        <xs:element name="Subclass" type="SubclassType"/>
+        <xs:element name="Infraclass" type="InfraclassType"/>
+        <xs:element name="Superorder" type="SuperorderType"/>
+        <xs:element name="Order" type="OrderType"/>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:group name="tsngroup">
+    <xs:annotation>
+      <xs:documentation>This describes one entity, e.g. a kingdom, a phylum, a species, etc.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="tsn" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>Integrated Taxonomic Information System (ITIS) Serial Number
+See www.itis.gov</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="completename">
+        <xs:annotation>
+          <xs:documentation>Scientific name for this taxa</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:whiteSpace value="collapse"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="vernacular" type="vernacularType">
+        <xs:annotation>
+          <xs:documentation>Common names for this taxa.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+  <xs:complexType name="InfrakingdomType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element name="Phylum" type="PhylumType"/>
+        <xs:element name="Subphylum" type="SubphylumType"/>
+        <xs:element name="Superclass" type="SuperclassType"/>
+        <xs:element name="Class" type="ClassType"/>
+        <xs:element name="Subclass" type="SubclassType"/>
+        <xs:element name="Infraclass" type="InfraclassType"/>
+        <xs:element name="Superorder" type="SuperorderType"/>
+        <xs:element name="Order" type="OrderType"/>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InfraphylumType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element name="Superclass" type="SuperclassType"/>
+        <xs:element name="Class" type="ClassType"/>
+        <xs:element name="Subclass" type="SubclassType"/>
+        <xs:element name="Infraclass" type="InfraclassType"/>
+        <xs:element name="Superorder" type="SuperorderType"/>
+        <xs:element name="Order" type="OrderType"/>
+        <xs:element name="Suborder" type="SuborderType"/>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InfraorderType">
+    <xs:sequence>
+      <xs:group ref="tsngroup"/>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Subtypes of this rank</xs:documentation>
+        </xs:annotation>
+        <xs:element name="Superfamily" type="SuperfamilyType"/>
+        <xs:element name="Family" type="FamilyType"/>
+        <xs:element name="Subfamily" type="SubfamilyType"/>
+        <xs:element name="Genus" type="GenusType"/>
+        <xs:element name="Subgenus" type="SubgenusType"/>
+        <xs:element name="Species" type="SpeciesType"/>
+        <xs:element name="Subspecies" type="SubspeciesType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

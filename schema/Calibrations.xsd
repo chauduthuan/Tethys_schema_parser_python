@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://tethys.sdsu.edu/schema/1.0"
+    xmlns="http://tethys.sdsu.edu/schema/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="unqualified">
+    <xs:include schemaLocation="CommonElements.xsd"/>
+    <xs:element name="Calibration" type="CalibrationType"> </xs:element>
+    <xs:complexType name="CalibrationType">
+        <xs:sequence>
+            <xs:element name="ID" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>identifier of instrument, preamplifier, or hydrophone.
+Corresponds to elements in Deployment:
+Deployment/Instrument/ID
+Deployment/Sensors/Audio[i]/HydrophoneID
+Deployment/Sensors/Audio[i]/PreampID
+</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="TimeStamp" type="xs:dateTime">
+                <xs:annotation>
+                    <xs:documentation>Date and time of calibration</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Type">
+                <xs:annotation>
+                    <xs:documentation>hydrophone, preamplifier, or end-to-end
+Indicates type of calibration</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="hydrophone"/>
+                        <xs:enumeration value="preamplifier"/>
+                        <xs:enumeration value="end-to-end"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element minOccurs="0" name="Method" type="AlgorithmType">
+                <xs:annotation>
+                    <xs:documentation>Method used to calibrate instrument.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element minOccurs="0" name="ResponsibleParty" type="ResponsibleParty">
+                <xs:annotation>
+                    <xs:documentation>Who conducted/managed the calibration?</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="FrequencyResponse">
+                <xs:annotation>
+                    <xs:documentation>Lists of frequencies (Hz) and responses (dB).  Lists must be of equal length.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:element name="Hz" type="DoubleList"/>
+                        <xs:element name="dB" type="DoubleList"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="DoubleList">
+        <xs:list itemType="xs:double"/>
+    </xs:simpleType>
+</xs:schema>
