@@ -6,6 +6,7 @@ Created on Mon Jun  4 17:09:13 2018
 """
 
 import xml.etree.ElementTree as ET
+from collections import defaultdict
 import json
 
 
@@ -14,7 +15,7 @@ class XmlTree:
         self.file_name = file_name
         self.tree = ET.parse(file_name)
         self.root = self.tree.getroot()
-        self.schema = {}        #dictionary represents what we want, then convert it to json
+        self.schema = []        #dictionary array represents what we want, then convert it to json
         
         self.initialize_parent_map()
         self.initialize_namespace_map()
@@ -26,15 +27,19 @@ class XmlTree:
         self.parent_map = {c:p for p in self.tree.iter() for c in p}
         
     def initialize_namespace_map(self):
-        """create name space map as dictionary, key is uri, value is namespace """
+        """create name space map as dictionary, key is {uri, value is namespace 
+        so when split node tag with delimeter }, first item is {uri and second item is ns
+        """
         #self.namespace_map = {"http://www.w3.org/2001/XMLSchema":"xs"}
         namespaces = {}
         for event, elem in ET.iterparse(self.file_name, events=("start-ns","start")):
             if event =="start-ns":
-                if elem[0] in namespaces and namespaces[elem[0]] != elem[1]:
-                    raise KeyError("Duplicate prefix with different URI found.")
+                #if elem[0] in namespaces and namespaces[elem[0]] != elem[1]:
+                #    raise KeyError("Duplicate prefix with different URI found.")
                 #namespaces[str(elem[0])] = elem[1]
-                namespaces["{" + str(elem[1]) ] = str(elem[0])
+                if elem[1] in namespaces and namespaces[elem[1]] != elem[0]:
+                    raise KeyError("Duplicate prefix with different URI found.")                
+                namespaces["{" + elem[1] ] = elem[0]
         self.namespace_map = namespaces
         print(self.namespace_map)
 
@@ -94,26 +99,51 @@ class XmlTree:
         #self.print_parent_list(parent_list)
         
         parent_name_list = self.get_parent_name_list(parent_list)
-
+        
+        #extract information of a node
         tag = self.get_node_tag(node)
         attributes = node.attrib
         name = ""
         if "name" in attributes:
             name = attributes["name"]
-           
-        if ((tag == "xs:element") and (name!="")):
-            print(tag)
-            print(name)
+
+        if (name == "Audio"):
+            print("something")
             
-            self.print_parent_name_list(parent_name_list)
-            # do stuff
-            schema_node = {}
-            schema_node["name"] = name
-            schema_node["children"] = {}
             
             
         #NEED to know what to add to schema
-        
+        #NEED to ADD root to schema, root can have multiple childs and root is xs:schema
+        #if (((tag == "xs:element") or (tag == "xs:complexType"))and (name!="")):
+        if (name != ""):
+            print("tag = " + tag)
+            print("name = " + name)
+            
+            self.print_parent_name_list(parent_name_list)
+            # do stuff such as adding node to schema
+            schema_node = defaultdict(dict)
+            schema_node["name"] = name
+            schema_node["children"] = []
+            
+            #find a location in schema to add node
+            if (len(parent_name_list) == 0): #no parents
+                self.schema.append(schema_node)
+            else:
+                #search to correct location in schema
+                location = self.schema 
+                #print(location)
+                for i in range(len(parent_name_list)):
+                    parent = parent_name_list[i]
+                    for j in range(len(location)):
+                        if(location[j]['name'] == parent):
+                            location = location[j]["children"]
+                            break
+                location.append(schema_node)
+                    
+                    
+                
+            
+            
     def print_parent_list(self, parent_list):
         print("---parent list---")
         for parent in parent_list:
@@ -136,13 +166,17 @@ class XmlTree:
         tag = self.namespace_map[ns[0]] + ":" + ns[1] #xs:element
         return tag
         
+    def get_schema(self):
+        return self.schema
         
     
     
 if __name__ == '__main__':
     print("*****Start*****")
-    file_name = 'Deployment.xsd'
+    file_name = 'sampleXSD.xsd'
     xmlTree = XmlTree(file_name)
-    
+    schema = xmlTree.get_schema()
+    schema = json.dumps(schema, indent=4)
+    print(schema)
     
     print("*****End*****")
