@@ -15,7 +15,12 @@ class XmlTree:
         self.file_name = file_name
         self.tree = ET.parse(file_name)
         self.root = self.tree.getroot()
-        self.schema = []        #dictionary array represents what we want, then convert it to json
+        
+        #self.schema = []        #dictionary array represents what we want, then convert it to json
+        self.schema = defaultdict(dict)
+        self.schema["name"] = self.file_name
+        self.schema["children"] = []
+        self.schema_root = self.schema["children"]
         
         self.initialize_parent_map()
         self.initialize_namespace_map()
@@ -68,7 +73,7 @@ class XmlTree:
         #NEED to convert schema to json
                     
     def get_parent_list(self, node):
-        """Return list of parent element of current node, first element in the list is root """
+        """Return list of parent element of current node, first element in the list is root which is xs:schema"""
         parent_list = []
         parent = node
         while True:
@@ -82,7 +87,8 @@ class XmlTree:
     
     def get_parent_name_list(self, parent_list):
         """Return parent name list of current node from parent list"""
-        #NEED to check not only using name attributes in schema but element tag
+        #NEED to check not only using name attributes in schema but maybe using element tag 
+        #NEED to consider xs:schema
         name_list = []
         for parent in parent_list:
             attributes = parent.attrib
@@ -107,11 +113,6 @@ class XmlTree:
         if "name" in attributes:
             name = attributes["name"]
 
-        if (name == "Audio"):
-            print("something")
-            
-            
-            
         #NEED to know what to add to schema
         #NEED to ADD root to schema, root can have multiple childs and root is xs:schema
         #if (((tag == "xs:element") or (tag == "xs:complexType"))and (name!="")):
@@ -127,10 +128,10 @@ class XmlTree:
             
             #find a location in schema to add node
             if (len(parent_name_list) == 0): #no parents
-                self.schema.append(schema_node)
+                self.schema_root.append(schema_node)
             else:
                 #search to correct location in schema
-                location = self.schema 
+                location = self.schema_root 
                 #print(location)
                 for i in range(len(parent_name_list)):
                     parent = parent_name_list[i]
@@ -173,7 +174,7 @@ class XmlTree:
     
 if __name__ == '__main__':
     print("*****Start*****")
-    file_name = 'sampleXSD.xsd'
+    file_name = 'Deployment.xsd'
     xmlTree = XmlTree(file_name)
     schema = xmlTree.get_schema()
     schema = json.dumps(schema, indent=4)
