@@ -25,6 +25,10 @@ class XmlTree:
         self.initialize_parent_map()
         self.initialize_namespace_map()
         self.breath_first_iteration()
+        #SOME NOTE
+        #before createing schema, look up all dependencies such as base, ref or xs:include
+        #add dependencies to a dictionary
+        #modify tree by adding these dependencies
 
 
     def initialize_parent_map(self):
@@ -174,7 +178,7 @@ class XmlTree:
     
 if __name__ == '__main__':
     print("*****Start*****")
-    file_name = 'Deployment.xsd'
+    file_name = 'ex1.xsd'
     xmlTree = XmlTree(file_name)
     schema = xmlTree.get_schema()
     schema = json.dumps(schema, indent=4)
