@@ -19,24 +19,27 @@ class XmlTree:
         self.tree = ET.parse(file_name)
         self.root = self.tree.getroot()
         
-        #self.schema = []        #dictionary array represents what we want, then convert it to json
+        #schema is dictionary represents what we want, then convert it to json
         self.schema = defaultdict(dict)
         self.schema["name"] = self.file_name
         self.schema["children"] = []
         self.schema_root = self.schema["children"]
+        
+        #namespace map is used to know which namespace from uri
         self.initialize_namespace_map()
         
         #SOME NOTE
-        #before createing schema, look up all dependencies such as base, ref or xs:include
+        #before createing schema, look up all dependencies such as base, ref, type or xs:include
         #add dependencies to a dictionary
         #modify tree by adding these dependencies
         self.dependencies = {} #dictionary for dependencies, key is name, value is element tree        
         self.initialize_dependencies_and_patch_tree()
         
+        #parent map is used to trace back parent element 
         self.initialize_parent_map()
         
-        #self.breath_first_iteration() #to generate schema json
-        self.schema_processed = False
+        #self.breath_first_iteration() is called in self.get_schema() to generate schema 
+        self.schema_processed = False   #to know if schema is generated
 
     def initialize_parent_map(self):
         """create parent map as dictionary, key and value are Element """
@@ -60,7 +63,7 @@ class XmlTree:
         print(self.namespace_map)
         
     def initialize_dependencies_and_patch_tree(self):
-        """create dependencies dictionary which key is name and key is elementree
+        """create dependencies dictionary which key is name of reference and key is elementree
         example: "Deployment":element 
         then patch all missing element in tree, for example, xs:extension 
         """
@@ -82,18 +85,16 @@ class XmlTree:
                 name = attributes["name"]
                 self.dependencies[name] = node
             
-        #patch tree
-        print("FINDING NODES NEED PATCH")
-        nodes_need_patch = self.find_node_need_patches()
+        #patch current tree
+        #print("FINDING NODES NEED PATCH")
+        nodes_need_patch = self.get_nodes_need_patches()
         for node in nodes_need_patch:
-            print(self.get_node_tag(node))
-            name = self.get_base_or_ref_or_type(node)
-            patch = self.dependencies[name]
+            #print(self.get_node_tag(node))
+            reference = self.get_base_or_ref_or_type(node)
+            patch = self.dependencies[reference]
             self.patch_node(node, patch)
-            #print("base = " + name)
-            #node.insert(0, self.dependencies[name])
         
-    def find_node_need_patches(self):
+    def get_nodes_need_patches(self):
         """Iterate through tree, append node that is needed to patch up
         return list of nodes/element 
         """
@@ -113,27 +114,25 @@ class XmlTree:
             if self.is_node_needed_to_be_patched(node):
                 nodes_need_patch.append(node)
                 
-        
         return nodes_need_patch
     
     def is_node_needed_to_be_patched(self, node):
         """check if node needs to be patched
-        return true if node is xs:extension or has attribute base
+        return true if node is xs:extension or has attribute base or type attribute is not from xs, etc
         """
         #tag = self.get_node_tag(node)
+        #NEED to check tag value
         attributes = node.attrib
+        reference = None
         if ("ref" in attributes):
-            ref = attributes["ref"]
-            if not self.is_xs_reference(ref):
-                return True
+            reference = attributes["ref"]
         elif ("base" in attributes):
-            base = attributes["base"]
-            if not self.is_xs_reference(base):
-                return True
+            reference = attributes["base"]
         elif ("type" in attributes):
-            node_type = attributes["type"]
-            if not self.is_xs_reference(node_type):
-                return True
+            reference = attributes["type"]
+        if (reference is not None) and (not self.is_xs_reference(reference)):
+            return True
+        #print(reference)
         return False
     
     def patch_node(self, node, patch):
@@ -149,22 +148,22 @@ class XmlTree:
             node.insert(index, new_child)
             index += 1
         
-    def is_xs_reference(self, ref):
+    def is_xs_reference(self, reference):
         """check if reference is xs type such as xs:string """
-        xs = ref[0:2]
+        xs = reference[0:2]
         return xs=="xs"
     
     def get_base_or_ref_or_type(self, node):
         attributes = node.attrib
-        name = ""
+        reference = ""
         if ("ref" in attributes):
-             name = attributes["ref"]
+             reference = attributes["ref"]
         elif ("base" in attributes):
-            name = attributes["base"]
+            reference = attributes["base"]
         elif ("type" in attributes):
-            name = attributes["type"]
-            name = self.remove_namespace(name)
-        return name
+            reference = attributes["type"]
+            reference = self.remove_namespace_from_string(reference)
+        return reference
     
     def get_dependencies(self):
         """return dictionary of dependencies"""
@@ -314,15 +313,16 @@ class XmlTree:
     def get_schema(self):
         if not self.schema_processed:
             self.breath_first_iteration()
+            self.schema_processed = True
         return self.schema
         
     def get_root(self):
         return self.root
     
-    def remove_namespace(self, namespace):
+    def remove_namespace_from_string(self, reference):
         """Remove namespace in string
         for example ns:abc then return abc"""
-        ns = namespace.split(":")
+        ns = reference.split(":")
         return ns[-1]
     
     
