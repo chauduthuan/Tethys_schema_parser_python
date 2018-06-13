@@ -91,7 +91,9 @@ for node in node_need_to_patch:
 #        print("--->" + child.attrib["name"])
 
 xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
-    
+for node in root.getiterator():
+    print(minidom.parseString(ET.tostring(node)).toprettyxml(indent="   "))
+    print("====================================================")
     
     
     

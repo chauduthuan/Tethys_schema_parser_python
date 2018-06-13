@@ -8,6 +8,9 @@ Created on Mon Jun  4 17:09:13 2018
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 import json
+import xml.dom.minidom as minidom
+import copy
+
 
 
 class XmlTree:
@@ -21,7 +24,6 @@ class XmlTree:
         self.schema["name"] = self.file_name
         self.schema["children"] = []
         self.schema_root = self.schema["children"]
-        self.initialize_parent_map()
         self.initialize_namespace_map()
         
         #SOME NOTE
@@ -31,7 +33,8 @@ class XmlTree:
         self.dependencies = {} #dictionary for dependencies, key is name, value is element tree        
         self.initialize_dependencies_and_patch_tree()
         
-        #self.breath_first_iteration()
+        self.initialize_parent_map()
+        self.breath_first_iteration()
 
 
     def initialize_parent_map(self):
@@ -84,11 +87,10 @@ class XmlTree:
         for node in nodes_need_patch:
             print(self.get_node_tag(node))
             name = self.get_base_or_ref(node)
-            print("base = " + name)
-            node.insert(0, self.dependencies[name])
-            
-
-                    
+            patch = self.dependencies[name]
+            self.patch_node(node, patch)
+            #print("base = " + name)
+            #node.insert(0, self.dependencies[name])
         
     def find_node_need_patches(self):
         """Iterate through tree, append node that is needed to patch up
@@ -116,6 +118,18 @@ class XmlTree:
                 return True
         return False
     
+    def patch_node(self, node, patch):
+        """add all children and attributes or patch to node """
+        attributes = patch.attrib
+        for key in attributes:
+            if key!="name":
+                node.attrib[key] = attributes[key]
+        index = 0
+        for child in patch.getchildren():
+            new_child = copy.deepcopy(child)
+            node.insert(index, new_child)
+            index += 1
+        
     def is_xs_reference(self, ref):
         """check if reference is xs type such as xs:string """
         xs = ref[0:2]
@@ -278,13 +292,15 @@ class XmlTree:
     def get_schema(self):
         return self.schema
         
+    def get_root(self):
+        return self.root
     
     
 if __name__ == '__main__':
     print("*****Start*****")
     file_name = 'Deployment.xsd'
     xmlTree = XmlTree(file_name)
-    xmlTree.breath_first_iteration()
+    #xmlTree.breath_first_iteration()
     schema = xmlTree.get_schema()
     schema = json.dumps(schema, indent=4)
     #print(schema)
@@ -296,7 +312,15 @@ if __name__ == '__main__':
     for key in dependencies:
         print(key)
         
-        
-    
+    root = xmlTree.get_root()
+    print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
+    print("Checking unknownSensor node")
+    nodes = root.findall(".//*[@name='unknownSensor']")
+    for node in nodes:
+#        for child in node.getiterator():
+#            if "name" in child.attrib:
+#                print(child.attrib["name"])
+        print(minidom.parseString(ET.tostring(node)).toprettyxml(indent="   "))
+
     
     print("*****End*****")
