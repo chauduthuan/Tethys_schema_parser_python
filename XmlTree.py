@@ -34,7 +34,7 @@ class XmlTree:
         self.initialize_dependencies_and_patch_tree()
         
         self.initialize_parent_map()
-        self.breath_first_iteration()
+        self.breath_first_iteration() #to generate schema json
 
 
     def initialize_parent_map(self):
@@ -86,7 +86,7 @@ class XmlTree:
         nodes_need_patch = self.find_node_need_patches()
         for node in nodes_need_patch:
             print(self.get_node_tag(node))
-            name = self.get_base_or_ref(node)
+            name = self.get_base_or_ref_or_type(node)
             patch = self.dependencies[name]
             self.patch_node(node, patch)
             #print("base = " + name)
@@ -97,9 +97,22 @@ class XmlTree:
         return list of nodes/element 
         """
         nodes_need_patch = []
-        for node in self.root.getiterator():
+        #for node in self.root.getiterator():
+        #    if self.is_node_needed_to_be_patched(node):
+        #        nodes_need_patch.append(node)
+                
+        #do breath first iteration to append node need to be patched
+        queue = []
+        queue.append(self.root)
+        
+        while (len(queue) != 0):
+            node = queue.pop(0)
+            for child in node.getchildren():
+                queue.append(child)
             if self.is_node_needed_to_be_patched(node):
                 nodes_need_patch.append(node)
+                
+        
         return nodes_need_patch
     
     def is_node_needed_to_be_patched(self, node):
@@ -116,6 +129,10 @@ class XmlTree:
             base = attributes["base"]
             if not self.is_xs_reference(base):
                 return True
+        elif ("type" in attributes):
+            node_type = attributes["type"]
+            if not self.is_xs_reference(node_type):
+                return True
         return False
     
     def patch_node(self, node, patch):
@@ -126,6 +143,7 @@ class XmlTree:
                 node.attrib[key] = attributes[key]
         index = 0
         for child in patch.getchildren():
+            #need to clone/copy because if not, it will mess up the trace of parent_list
             new_child = copy.deepcopy(child)
             node.insert(index, new_child)
             index += 1
@@ -135,13 +153,16 @@ class XmlTree:
         xs = ref[0:2]
         return xs=="xs"
     
-    def get_base_or_ref(self, node):
+    def get_base_or_ref_or_type(self, node):
         attributes = node.attrib
         name = ""
         if ("ref" in attributes):
              name = attributes["ref"]
         elif ("base" in attributes):
             name = attributes["base"]
+        elif ("type" in attributes):
+            name = attributes["type"]
+            name = self.remove_namespace(name)
         return name
     
     def get_dependencies(self):
@@ -295,6 +316,12 @@ class XmlTree:
     def get_root(self):
         return self.root
     
+    def remove_namespace(self, namespace):
+        """Remove namespace in string
+        for example ns:abc then return abc"""
+        ns = namespace.split(":")
+        return ns[-1]
+    
     
 if __name__ == '__main__':
     print("*****Start*****")
@@ -315,12 +342,11 @@ if __name__ == '__main__':
     root = xmlTree.get_root()
     print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
     print("Checking unknownSensor node")
-    nodes = root.findall(".//*[@name='unknownSensor']")
+    nodes = root.findall(".//*[@name='Sensors']")
     for node in nodes:
 #        for child in node.getiterator():
 #            if "name" in child.attrib:
 #                print(child.attrib["name"])
-        print(minidom.parseString(ET.tostring(node)).toprettyxml(indent="   "))
+        unknownSensor = minidom.parseString(ET.tostring(node)).toprettyxml(newl='', indent='  ')
 
-    
     print("*****End*****")
