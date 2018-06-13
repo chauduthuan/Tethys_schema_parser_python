@@ -34,8 +34,9 @@ class XmlTree:
         self.initialize_dependencies_and_patch_tree()
         
         self.initialize_parent_map()
-        self.breath_first_iteration() #to generate schema json
-
+        
+        #self.breath_first_iteration() #to generate schema json
+        self.schema_processed = False
 
     def initialize_parent_map(self):
         """create parent map as dictionary, key and value are Element """
@@ -311,6 +312,8 @@ class XmlTree:
         return tag
         
     def get_schema(self):
+        if not self.schema_processed:
+            self.breath_first_iteration()
         return self.schema
         
     def get_root(self):
